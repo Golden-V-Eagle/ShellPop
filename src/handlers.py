@@ -188,10 +188,6 @@ class MetaHandler(object):
             else:
                 self.payload = "linux/x86/shell_bind_tcp"
             return
-        elif self.shell.lower() == "ssl":
-            if is_bind is False:
-                self.payload = "python/shell_reverse_tcp_ssl"
-            return
         self.payload = "generic/shell_reverse_tcp"
 
 
@@ -240,10 +236,7 @@ def get_shell_name(shell_obj):
     the receiving shell type for meterpreter upgrade.
     """
     if shell_obj.system_os == "linux":
-        if "ssl" in shell_obj.short_name: 
-            return "ssl"
-        else:
-            return "bash"
+        return "bash"
     if shell_obj.system_os == "windows":
         if "powershell" in shell_obj.short_name:
             return "powershell"
